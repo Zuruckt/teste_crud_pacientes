@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pacient extends Model
 {
@@ -14,7 +15,7 @@ class Pacient extends Model
         'profile_photo',
     ];
 
-    public function symptoms()
+    public function symptoms(): BelongsToMany
     {
         return $this->belongsToMany(Symptom::class);
     }
