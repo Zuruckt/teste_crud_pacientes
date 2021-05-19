@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Symptom extends Model
 {
@@ -11,7 +11,7 @@ class Symptom extends Model
         'name'
     ];
 
-    public function pacients()
+    public function pacients(): BelongsToMany
     {
         return $this->belongsToMany(Pacient::class);
     }
