@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostPacientRequest extends FormRequest
+class PutPacientRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,11 @@ class PostPacientRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'birth_date' => 'required|date',
-            'cpf' => 'required|cpf',
-            'telephone_number' => 'required|celular_com_ddd',
-            'profile_photo' => 'required|image',
+            'name' => 'sometimes|required|string',
+            'birth_date' => 'sometimes|required|date',
+            'cpf' => 'sometimes|required|cpf',
+            'telephone_number' => 'sometimes|required|celular_com_ddd',
+            'profile_photo' => 'sometimes|required|image',
         ];
     }
 

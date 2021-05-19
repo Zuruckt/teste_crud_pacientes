@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostPacientRequest;
+use App\Http\Requests\PutPacientRequest;
 use App\Repositories\PacientRepository;
 use Illuminate\Http\Request;
 
@@ -24,19 +25,24 @@ class PacientController extends Controller
         return response()->json($this->repository->getAllPacients());
     }
 
-    public function deletePacient(Request $request, $id)
+    public function getPacient($id)
     {
-        $request->merge(['id' => $id]);
-        
-        $this->validate($request, 
-        ['id' => 'required|exists:pacients'],
-        ['id' => [
-            'required' => 'O campo id é necessário.',
-            'exists' => 'Paciente não encontrado',
-        ]]);
+       return $this->repository->getPacient($id);
+    }
+    
+    public function putPacient(PutPacientRequest $request, int $id)
+    {
+        $data = $this->repository->putPacient($id, $request->validated());
 
-        if ($this->repository->deletePacient($id)) return response()->json(['message' => 'Deleted'], 200);
+        if($data) return response()->json($data, 201);
 
-        return response()->json(['error' => 'Failed to delete'], 500);
+        return response()->json(['error' => 'Failed to update.'], 500);
+    }
+
+    public function deletePacient(int $id)
+    {
+        if ($this->repository->deletePacient($id)) return response()->json(['message' => 'Deleted.'], 200);
+
+        return response()->json(['error' => 'Failed to delete.'], 500);
     }
 }

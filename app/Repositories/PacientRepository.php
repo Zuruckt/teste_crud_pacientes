@@ -17,18 +17,32 @@ class PacientRepository
         return $this->model->all();
     }
 
-    public function postPacient($data): Pacient
+    public function getPacient($id): Pacient
     {
-        $path = Storage::putFile('pacient_photos', $data['profile_photo']);
+        return $this->model->findOrFail($id);
+    }
 
-        $data['profile_photo'] = $path;
+    public function postPacient(array $data): Pacient
+    {
+        $data['profile_photo'] = Storage::putFile('pacient_photos', $data['profile_photo']);
 
         return $this->model->create($data);
     }
 
-    public function deletePacient($id): bool
+    public function putPacient(int $id, array $data): Pacient | bool
     {
-        $model = $this->model->find($id);
+        $model = $this->model->findOrFail($id);
+
+        Storage::delete($model->profile_photo);
+        $data['profile_photo'] = Storage::putFile('pacient_photos', $data['profile_photo']);
+    
+        if(!$model->update($data)) return false;
+        return $model->refresh();
+    }
+
+    public function deletePacient(int $id): bool
+    {
+        $model = $this->model->findOrFail($id);
 
         Storage::delete($model->profile_photo);
         $model->symptoms()->sync([]);

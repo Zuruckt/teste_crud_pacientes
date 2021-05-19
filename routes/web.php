@@ -15,9 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', fn() => view('welcome'));
+Route::get('/token', fn() => csrf_token()); //used for postman testing, will be removed
 
 Route::group(['prefix' => 'pacients'], function () {
     Route::get('/', [PacientController::class, 'getAllPacients'])->name('get-pacients');
+    Route::get('/{id}', [PacientController::class, 'getPacient'])->name('get-pacient');
     Route::post('/', [PacientController::class, 'postPacient'])->name('post-pacient');
+    Route::put('/{id}', [PacientController::class, 'putPacient'])->name('put-pacient');
     Route::delete('/{id}', [PacientController::class, 'deletePacient'])->name('delete-pacient');
 });
