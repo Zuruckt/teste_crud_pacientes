@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PacientController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', fn() => view('welcome'));
+
+Route::group(['prefix' => 'pacients'], function () {
+    Route::get('/', [PacientController::class, 'getAllPacients'])->name('get-pacients');
+    Route::post('/', [PacientController::class, 'postPacient'])->name('post-pacient');
+    Route::delete('/{id}', [PacientController::class, 'deletePacient'])->name('delete-pacient');
 });
