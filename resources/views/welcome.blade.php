@@ -33,7 +33,7 @@
                     <th scope="col">Data de Nascimento</th>
                     <th scope="col">CPF</th>
                     <th scope="col">Telefone</th>
-                    <th scope="col">Foto</th>
+                    <th scope="col">Perfil</th>
                     <th scope="col">#</th>
                     <th scope="col">#</th>
                 </tr>
@@ -227,13 +227,14 @@
                 }
                 , success: function(data) {
                     $.each(data, function(i, data) {
+                        let profile_route = "{{route('get-pacient-profile', ':id')}}".replace(':id', data.id);
                         let body = '<tr id="row-' + data.id + '">';
                         body += "<td>" + data.id + "</td>";
                         body += "<td>" + data.name + "</td>";
                         body += "<td>" + data.birth_date + "</td>";
                         body += "<td>" + data.cpf + "</td>";
                         body += "<td>" + data.telephone_number + "</td>";
-                        body += "<td>" + data.profile_photo + "</td>";
+                        body += "<td><a class='btn btn-primary' href='" + profile_route + "'><i class='fas fa-id-card'></i></a></td>";
                         body += '<td><button class="btn btn-warning" onclick="return showUpdatePacientModal(' + data.id + ');""><i class="fas fa-pen"></i></button></td>'
                         body += '<td><button class="btn btn-danger" onclick="return deletePacient(' + data.id + ');""><i class="fas fa-times"></i></button></td>'
                         body += "</tr>";
@@ -313,13 +314,15 @@
                             , 'X-CSRF-TOKEN': '{{csrf_token()}}'
                         }
                         , success: function(response) {
+                            let profile_route = "{{route('get-pacient-profile', ':id')}}".replace(':id', response.id);
+
                             let body = '<tr id="row-' + response.id + '">';
                             body += "<td>" + response.id + "</td>";
                             body += "<td>" + response.name + "</td>";
                             body += "<td>" + response.birth_date + "</td>";
                             body += "<td>" + response.cpf + "</td>";
                             body += "<td>" + response.telephone_number + "</td>";
-                            body += "<td>" + response.profile_photo + "</td>";
+                            body += "<td> <a class='btn btn-primary' href='" + profile_route + "'><i class='fas fa-id-card'></i></a></td>";
                             body += '<td><button class="btn btn-warning" onclick="return showUpdatePacientModal(' + response.id + ');""><i class="fas fa-pen"></i></button></td>'
                             body += '<td><button class="btn btn-danger" onclick="return deletePacient(' + response.id + ');""><i class="fas fa-times"></i></button></td>'
                             body += "</tr>";
@@ -376,11 +379,10 @@
                 submitHandler: function(form) {
                     let id = $('#put_id').val();
                     put_form_data.delete('id');
-
                     $.ajax({
                         type: 'POST'
                         , url: "{{route('put-pacient', ':id')}}".replace(':id', id)
-                        , data: put_form_data 
+                        , data: put_form_data
                         , mimeType: 'json'
                         , contentType: false
                         , processData: false
@@ -389,17 +391,17 @@
                             , 'X-CSRF-TOKEN': '{{csrf_token()}}'
                         }
                         , success: (response) => {
-                            let row =$('#row-' + id);
-
+                            let row = $('#row-' + id);
+                            let profile_route = "{{route('get-pacient-profile', ':id')}}".replace(':id', response.id);
                             let children = row.children();
 
                             $(children[1]).html("<td>" + response.name + "</td>");
                             $(children[2]).html("<td>" + response.birth_date + "</td>");
                             $(children[3]).html("<td>" + response.cpf + "</td>");
                             $(children[4]).html("<td>" + response.telephone_number + "</td>");
-                            $(children[5]).html("<td>" + response.profile_photo + "</td>");
-                    
-                            $('#post-pacient-modal').modal('hide');
+                            $(children[5]).html("<td> <a class='btn btn-primary' href='" + profile_route + "'><i class='fas fa-id-card'></i></a></td>");
+
+                            $('#put-pacient-modal').modal('hide');
                             $('#toast-title').html('Sucesso!');
                             $('#toast-body').html('Paciente editado com sucesso.');
                             $('#toast').toast('show');
@@ -448,7 +450,6 @@
                     , 'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }
                 , success: (response) => {
-                    console.log(response);
                     $('#put_id').val(response.id);
                     $('#put_name').val(response.name);
                     $('#put_cpf').val(response.cpf);
@@ -457,7 +458,6 @@
                     $('#put-pacient-modal').modal('show');
                 }
                 , error: function(response) {
-                    console.log(response);
                     $('#put-pacient-modal').modal('hide');
                     $('#toast-title').html('Falha!');
                     $('#toast-body').html('Falha ao editar paciente.');

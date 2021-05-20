@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostPacientRequest;
+use App\Http\Requests\PostSymptomsRequest;
 use App\Http\Requests\PutPacientRequest;
 use App\Repositories\PacientRepository;
-use Illuminate\Http\Request;
 
 class PacientController extends Controller
 {
@@ -29,6 +29,13 @@ class PacientController extends Controller
     {
        return $this->repository->getPacient($id);
     }
+
+    public function getPacientProfile($id)
+    {
+        $pacient = $this->repository->getPacient($id);
+
+        return view('pacient', ['pacient' => $pacient]);
+    }
     
     public function putPacient(PutPacientRequest $request, int $id)
     {
@@ -36,13 +43,18 @@ class PacientController extends Controller
 
         if($data) return response()->json($data, 201);
 
-        return response()->json(['error' => 'Failed to update.'], 500);
+        return response()->json(['error' => 'Falha ao atualizar.'], 500);
     }
 
     public function deletePacient(int $id)
     {
-        if ($this->repository->deletePacient($id)) return response()->json(['message' => 'Deleted.'], 200);
+        if ($this->repository->deletePacient($id)) return response()->json(['message' => 'Deletado.'], 200);
 
-        return response()->json(['error' => 'Failed to delete.'], 500);
+        return response()->json(['error' => 'Falha ao deletar.'], 500);
+    }
+
+    public function postPacientSymptoms(PostSymptomsRequest $request, int $id)
+    {
+        return response()->json([$this->repository->postPacientSymptoms($id, $request->validated())], 201);
     }
 }

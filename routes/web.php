@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PacientController;
+use App\Http\Controllers\SymptomController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,13 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', fn() => view('welcome'));
-Route::get('/token', fn() => csrf_token()); //used for postman testing, will be removed
+Route::get('/', fn() => view('welcome'))->name('welcome');
 
 Route::group(['prefix' => 'pacients'], function () {
     Route::get('/', [PacientController::class, 'getAllPacients'])->name('get-pacients');
     Route::get('/{id}', [PacientController::class, 'getPacient'])->name('get-pacient');
+    Route::get('/{id}/profile', [PacientController::class, 'getPacientProfile'])->name('get-pacient-profile');
     Route::post('/', [PacientController::class, 'postPacient'])->name('post-pacient');
     Route::put('/{id}', [PacientController::class, 'putPacient'])->name('put-pacient');
     Route::delete('/{id}', [PacientController::class, 'deletePacient'])->name('delete-pacient');
+    Route::post('/{id}/symptoms', [PacientController::class, 'postPacientSymptoms'])->name('post-pacient-symptoms');
+});
+
+Route::group(['prefix' => 'symptoms'], function () {
+    Route::get('/', [SymptomController::class, 'getAllSymptoms'])->name('get-symptoms');
 });

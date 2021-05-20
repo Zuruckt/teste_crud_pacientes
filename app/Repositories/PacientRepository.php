@@ -19,7 +19,7 @@ class PacientRepository
 
     public function getPacient($id): Pacient
     {
-        return $this->model->findOrFail($id);
+        return $this->model->findOrFail($id)->load('symptoms');
     }
 
     public function postPacient(array $data): Pacient
@@ -48,5 +48,12 @@ class PacientRepository
         $model->symptoms()->sync([]);
         
         return $model->delete();
+    }
+
+    public function postPacientSymptoms(int $id, array $data)
+    {
+        $model = $this->model->findOrFail($id);
+        $model->symptoms()->sync($data['symptoms'] ?? []);
+        return $model->symptoms->pluck('id');
     }
 }
